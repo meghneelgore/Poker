@@ -1,13 +1,13 @@
 package com.meghneelgore.poker;
 
+import com.meghneelgore.poker.Card.Rank;
+import com.meghneelgore.utils.maps.ImmutableMultiBimap;
+import com.meghneelgore.utils.maps.ImmutableTreeMultiBimap;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import com.meghneelgore.poker.Card.Rank;
-import com.meghneelgore.utils.maps.ImmutableMultiBiMap;
-import com.meghneelgore.utils.maps.ImmutableTreeMultiBiMap;
 
 public class PokerHand implements Comparable {
 
@@ -30,13 +30,8 @@ public class PokerHand implements Comparable {
         }
     }
 
-    static class EvaluationWithKickers {
-        Evaluation evaluation;
-        Card[] kickers;
-    }
-
     protected Card[] hand;
-    protected ImmutableMultiBiMap<Rank, Integer> map;
+    protected ImmutableMultiBimap<Rank, Integer> map;
 
     public PokerHand(Card card1, Card card2, Card card3, Card card4, Card card5) {
         hand = new Card[5];
@@ -59,7 +54,7 @@ public class PokerHand implements Comparable {
                 map.put(hand[i].getRank(), numCount + 1);
             }
         }
-        final ImmutableTreeMultiBiMap.Builder<Rank, Integer> builder = new ImmutableTreeMultiBiMap.Builder<>();
+        final ImmutableTreeMultiBimap.Builder<Rank, Integer> builder = new ImmutableTreeMultiBimap.Builder<>();
 
         for (Rank r : map.keySet()) {
             builder.put(r, map.get(r));
@@ -206,7 +201,7 @@ public class PokerHand implements Comparable {
                 return pairComparison;
 
             case FOUR_OF_A_KIND:
-                if(quadComparison != 0) {
+                if (quadComparison != 0) {
                     return quadComparison;
                 }
                 return kickerComparison;
