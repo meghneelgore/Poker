@@ -19,7 +19,7 @@ public class Deck {
     }
 
 
-    public Card draw(){
+    public Card draw() {
         return deck.remove(deck.size() - 1);
     }
 }
