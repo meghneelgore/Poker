@@ -4,31 +4,9 @@ import com.meghneelgore.poker.Card.Rank;
 import com.meghneelgore.utils.maps.ImmutableMultiBimap;
 import com.meghneelgore.utils.maps.ImmutableTreeMultiBimap;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class PokerHand implements Comparable {
-
-    public enum Evaluation {
-        ROYAL_FLUSH(10),
-        STRAIGHT_FLUSH(9),
-        FOUR_OF_A_KIND(8),
-        FULL_HOUSE(7),
-        FLUSH(6),
-        STRAIGHT(5),
-        THREE_OF_A_KIND(4),
-        TWO_PAIR(3),
-        PAIR(2),
-        HIGH_CARD(1);
-
-        int value;
-
-        Evaluation(int value) {
-            this.value = value;
-        }
-    }
 
     protected Card[] hand;
     protected ImmutableMultiBimap<Rank, Integer> map;
@@ -137,20 +115,20 @@ public class PokerHand implements Comparable {
     }
 
     private int compareSameEvaluations(PokerHand thisHand, PokerHand otherHand, Evaluation eval) {
-        List<Rank> thisHandSingles = (List<Rank>) this.map.inverse().get(1);
-        List<Rank> otherHandSingles = (List<Rank>) otherHand.map.inverse().get(1);
+        Collection<Rank> thisHandSingles = thisHand.map.inverse().get(1);
+        Collection<Rank> otherHandSingles = otherHand.map.inverse().get(1);
         int kickerComparison = compareSortedListsOfRanks(thisHandSingles, otherHandSingles);
 
-        List<Rank> thisHandPairList = (List<Rank>) this.map.inverse().get(2);
-        List<Rank> otherHandPairList = (List<Rank>) otherHand.map.inverse().get(2);
+        Collection<Rank> thisHandPairList = thisHand.map.inverse().get(2);
+        Collection<Rank> otherHandPairList = otherHand.map.inverse().get(2);
         int pairComparison = compareSortedListsOfRanks(thisHandPairList, otherHandPairList);
 
-        List<Rank> thisHandTrioList = (List<Rank>) this.map.inverse().get(3);
-        List<Rank> otherHandTrioList = (List<Rank>) otherHand.map.inverse().get(3);
+        Collection<Rank> thisHandTrioList = thisHand.map.inverse().get(3);
+        Collection<Rank> otherHandTrioList = otherHand.map.inverse().get(3);
         int trioComparison = compareSortedListsOfRanks(thisHandTrioList, otherHandTrioList);
 
-        List<Rank> thisHandQuadList = (List<Rank>) this.map.inverse().get(4);
-        List<Rank> otherHandQuadList = (List<Rank>) otherHand.map.inverse().get(4);
+        Collection<Rank> thisHandQuadList = thisHand.map.inverse().get(4);
+        Collection<Rank> otherHandQuadList = otherHand.map.inverse().get(4);
         int quadComparison = compareSortedListsOfRanks(thisHandQuadList, otherHandQuadList);
 
         switch (eval) {
@@ -211,7 +189,9 @@ public class PokerHand implements Comparable {
         }
     }
 
-    private int compareSortedListsOfRanks(List<Rank> thisList, List<Rank> otherList) {
+    private int compareSortedListsOfRanks(Collection<Rank> thisCollection, Collection<Rank> otherCollection) {
+        List<Rank> thisList = new ArrayList<>(thisCollection);
+        List<Rank> otherList = new ArrayList<>(otherCollection);
         if (thisList.size() != otherList.size()) throw new IllegalArgumentException("Lists are of different sizes!");
         for (int i = thisList.size() - 1; i >= 0; i--) {
             int comparison = thisList.get(i).compare(otherList.get(i));
@@ -230,5 +210,24 @@ public class PokerHand implements Comparable {
                 + hand[3].toString() + ", "
                 + hand[4].toString() + " ]";
 
+    }
+
+    public enum Evaluation {
+        ROYAL_FLUSH(10),
+        STRAIGHT_FLUSH(9),
+        FOUR_OF_A_KIND(8),
+        FULL_HOUSE(7),
+        FLUSH(6),
+        STRAIGHT(5),
+        THREE_OF_A_KIND(4),
+        TWO_PAIR(3),
+        PAIR(2),
+        HIGH_CARD(1);
+
+        int value;
+
+        Evaluation(int value) {
+            this.value = value;
+        }
     }
 }
